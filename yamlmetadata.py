@@ -9,9 +9,9 @@ except ImportError:
 try:
     import yaml
     try:
-        from yaml import CBaseLoader as Loader
+        from yaml import CBaseLoader as YamlLoader
     except ImportError:
-        from yaml import BaseLoader as Loader
+        from yaml import BaseLoader as YamlLoader
 except ImportError:
     yaml = False
 
@@ -29,12 +29,16 @@ class YAMLMetadataReader(MarkdownReader):
 
     def __init__(self, *args, **kwargs):
         super(YAMLMetadataReader, self).__init__(*args, **kwargs)
-        self.extensions = self.settings['MD_EXTENSIONS']
+        # Remove the default markdown metadata extension
+        try:
+            self.settings['MARKDOWN']['extensions'].remove('markdown.extensions.meta')
+        except ValueError:
+            logger.warning("'markdown.extensions.meta' extension not enabled. "
+                           "Did something change in MarkdownReader.__init__?")
 
     def read(self, source_path):
         self._source_path = source_path
-        self._md = Markdown(extensions=self.extensions.keys(),
-                            extension_configs=self.extensions)
+        self._md = Markdown(**self.settings['MARKDOWN'])
 
         with pelican_open(source_path) as text:
             content, metadata = self._process_content(text.strip())
@@ -53,13 +57,13 @@ class YAMLMetadataReader(MarkdownReader):
 
         # Find end of YAML block
         lines = text.split("\n")[1:]
-        for i, line in enumerate(lines):
+        for line_num, line in enumerate(lines):
             if line == "---":
                 break
 
         # Load YAML
         try:
-            data = yaml.load("\n".join(lines[:i]), Loader)
+            data = yaml.load("\n".join(lines[:line_num]), YamlLoader)
             if not isinstance(data, dict):
                 logger.warning("YAML header wasn't a dict for file {0}"
                                "".format(self._source_path))
@@ -70,7 +74,7 @@ class YAMLMetadataReader(MarkdownReader):
                          "".format(self._source_path, e))
             data = {}
 
-        return "\n".join(lines[i+1:]), data
+        return "\n".join(lines[line_num+1:]), data
 
     def _to_list(self, obj):
         """Make sure to always return a list"""
@@ -78,7 +82,7 @@ class YAMLMetadataReader(MarkdownReader):
 
     def _parse_metadata(self, meta):
         """Parse and sanitize metadata"""
-        _DEL = object()
+        _DEL = object() # Used as a sentinel
         FCNS = {
             'tags': lambda x, y: [Tag(t, y) for t in self._to_list(x)] or _DEL,
             'date': lambda x, y: get_date(x) if x else _DEL,
