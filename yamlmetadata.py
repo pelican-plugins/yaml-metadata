@@ -58,7 +58,7 @@ class YAMLMetadataReader(MarkdownReader):
         # Find end of YAML block
         lines = text.split("\n")[1:]
         for line_num, line in enumerate(lines):
-            if line == "---":
+            if line == "---" or line == "...":
                 break
 
         # Load YAML

@@ -9,8 +9,8 @@ Usage
 This plugin aims to keep things simple. Install the plugin and `.md`, `.markdown`, `.mkd` and
 `.mdown` files will use YAML-formatted data for their metadata.
 
-The files must start with a `---` line, contain some YAML-formatted data, then have another `---`
-line. Anything between the `---` lines will be interpreted as YAML and set as metadata, anything
+The files must start with a `---` line, contain some YAML-formatted data, and then end in either another `---`
+or `...` line. Anything between the `---` lines will be interpreted as YAML and set as metadata, anything
 after is considered content and will be parsed according to the global markdown settings.
 
 Example markdown file:
@@ -37,3 +37,4 @@ Installation
 License
 -------
 Licensed under the [MIT license](https://opensource.org/licenses/MIT)
+
