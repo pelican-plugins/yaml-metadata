@@ -1,2 +1,0 @@
-Markdown==2.6.8
-PyYAML==3.12

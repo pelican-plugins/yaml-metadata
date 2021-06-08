@@ -1,19 +1,21 @@
 pelican-yaml-metadata
 =====================
 
-This [Pelican](https://github.com/getpelican/pelican) plugin adds a reader for Markdown files with [YAML](https://en.wikipedia.org/wiki/YAML) metadata.
-YAML metadata allows for easier specification of more complex metadata, such as nested lists or dictionaries.
+This [Pelican](https://github.com/getpelican/pelican) plugin allows articles written in Markdown to
+define their metadata using a [YAML](https://en.wikipedia.org/wiki/YAML) header. This format is
+compatible with other popular static site generators like [Jekyll](https://jekyllrb.com/) or
+[Hugo](https://gohugo.io/).
+
+It is fully backwards-compatible with the default metadata parsing.
 
 Usage
 -----
-This plugin aims to keep things simple. Install the plugin and `.md`, `.markdown`, `.mkd` and
-`.mdown` files will use YAML-formatted data for their metadata.
+This plugin aims to keep things simple. After installing and enabling it, any markdown files will
+have the option of defining metadata using a YAML header instead of the standard key/value pairs.
 
-The files must start with a `---` line, contain some YAML-formatted data, and then end in either another `---`
-or `...` line. Anything between the `---` lines will be interpreted as YAML and set as metadata, anything
-after is considered content and will be parsed according to the global markdown settings.
+In order to specify metadata using YAML, simply enclose it within `---` lines.
 
-Example markdown file:
+Example:
 ```
 ---
 title: Some title
@@ -22,19 +24,20 @@ tags:
   - tag 1
   - tag 2
 date: 2014-12-25 00:00
-summary: The article summary will be __parsed__ as markdown!
+summary: The article summary will be __parsed__ as markdown
 ---
 
-This is the only text in the article.
+This is some article text.
 ```
+
+If the YAML block is not found, the metadata will be parsed using the normal markdown metadata
+syntax.
 
 Installation
 ------------
-1. Clone the repo into your Pelican plugin directory
-2. Install the plugin requirements (`pip install -r requirements.txt`)
-3. Add `'pelican-yaml-metadata'` to the Pelican `PLUGINS` list in `pelicanconf.py`
+1. Install using pip (`pip install git+https://github.com/pR0Ps/pelican-yaml-metadata.git`)
+2. Enable the plugin in your `pelicanconf.py` by adding `"yaml_metadata"` to the `PLUGINS` list.
 
 License
 -------
 Licensed under the [MIT license](https://opensource.org/licenses/MIT)
-
