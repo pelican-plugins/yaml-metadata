@@ -1,1 +1,1 @@
-from .yaml_metadata import *  # NOQA
+from .yaml_metadata import *  # NOQA: RUF100
