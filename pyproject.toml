@@ -1,0 +1,100 @@
+[project]
+name = "pelican-yaml-metadata"
+version = "2.0.0"
+description = "Pelican plugin for YAML-formatted Markdown metadata headers"
+authors = [
+    {name = "Carey Metcalfe", email = "carey@cmetcalfe.ca"},
+    {name = "Justin Mayer", email = "entroP@gmail.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Framework :: Pelican",
+    "Framework :: Pelican :: Plugins",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.8.1"
+dependencies = [
+    "markdown>=3.3.4",
+    "pelican>=4.8.0",
+    "pyYAML>=5.4.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/pelican-plugins/yaml-metadata"
+"Funding" = "https://donate.getpelican.com/"
+"Issue Tracker" = "https://github.com/pelican-plugins/yaml-metadata/issues"
+
+[tool.pdm.dev-dependencies]
+lint = [
+    "black>=23.3.0",
+    "invoke>=2.1.2",
+    "ruff>=0.0.272",
+]
+
+[tool.autopub]
+project-name = "Pelican YAML Metadata"
+git-username = "botpub"
+git-email = "52496925+botpub@users.noreply.github.com"
+append-github-contributor = true
+
+[tool.ruff]
+select = [
+  "B",   # flake8-bugbear
+  "BLE", # flake8-blind-except
+  "D",   # pydocstyle
+  "E",   # pycodestyle
+  "F",   # pyflakes
+  "I",   # isort
+  "ICN", # flake8-import-conventions
+  "ISC", # flake8-implicit-str-concat
+  "PGH", # pygrep-hooks
+  "PL",  # pylint
+  "RET", # flake8-return
+  "RUF", # ruff-specific rules
+  "SIM", # flake8-simplify
+  "T10", # flake8-debugger
+  "T20", # flake8-print
+  "TID", # flake8-tidy-imports
+  "TRY", # tryceratops
+  "UP",  # pyupgrade
+  "W",   # pycodestyle
+  "YTT", # flake8-2020
+]
+
+ignore = [
+  "D100",    # missing docstring in public module
+  "D103",    # missing docstring in public function
+  "D104",    # missing docstring in public package
+  "D107",    # missing docstring in __init__
+  "D203",    # blank line before class docstring
+  "D213",    # multi-line docstring summary should start at the second line
+  "ISC001",
+  "PLW2901",
+  "TRY401",
+]
+
+target-version = "py38"
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F403"]
+
+[tool.ruff.isort]
+combine-as-imports = true
+force-sort-within-sections = true
+known-first-party = ["pelican"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
