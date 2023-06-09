@@ -1,6 +1,10 @@
 Pelican YAML Metadata
 =====================
 
+[![Build Status](https://img.shields.io/github/actions/workflow/status/pelican-plugins/yaml-metadata/main.yml?branch=main)](https://github.com/pelican-plugins/yaml-metadata/actions)
+[![PyPI Version](https://img.shields.io/pypi/v/pelican-yaml-metadata)](https://pypi.org/project/pelican-yaml-metadata/)
+![License](https://img.shields.io/pypi/l/pelican-yaml-metadata?color=blue)
+
 This [Pelican](https://github.com/getpelican/pelican) plugin allows articles written in Markdown to
 define their metadata using a [YAML](https://en.wikipedia.org/wiki/YAML) header. This format is
 compatible with other popular static site generators like [Jekyll](https://jekyllrb.com/) or
