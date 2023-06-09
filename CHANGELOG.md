@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+2.1.0 - 2023-06-09
+------------------
+
+Publish first package release to PyPI.
+
+Contributed by [Justin Mayer](https://github.com/justinmayer) via [PR #2](https://github.com/pelican-plugins/yaml-metadata/pull/2/)
+
+
 2.0.0 - 2021-06-08
 ------------------
 
