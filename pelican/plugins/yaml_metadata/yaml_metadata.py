@@ -20,7 +20,7 @@ with contextlib.suppress(ImportError):
     ENABLED = True
 
 
-logger = logging.getLogger(__name__)
+__log__ = logging.getLogger(__name__)
 
 HEADER_RE = re.compile(
     r"^---$" r"(?P<metadata>.+?)" r"^(?:---|\.\.\.)$" r"(?P<content>.*)",
@@ -88,10 +88,10 @@ class YAMLMetadataReader(MarkdownReader):
             m = HEADER_RE.fullmatch(text)
 
         if not m:
-            logger.info(
+            __log__.info(
                 (
-                    "No YAML metadata header found in '%s' - falling back to Markdown"
-                    " metadata parsing."
+                    "No YAML metadata header found in '%s' - "
+                    "falling back to Markdown metadata parsing."
                 ),
                 source_path,
             )
@@ -103,23 +103,26 @@ class YAMLMetadataReader(MarkdownReader):
         )
 
     def _load_yaml_metadata(self, text):
-        """Load Pelican metadata from the specified text."""
+        """Load Pelican metadata from the specified text.
+
+        Returns an empty dict if the data fails to parse properly.
+        """
         try:
             metadata = yaml.safe_load(text)
-            if not isinstance(metadata, dict):
-                logger.error(
-                    "YAML header didn't parse as a dict for file '%s'",
-                    self._source_path,
-                )
-                logger.debug("YAML data: %r", metadata)
-                return {}
-        except Exception as e:  # NOQA: BLE001, RUF100
-            logger.exception(
-                "Error parsing YAML for file '%s': %s: %s",
+        except Exception:  # NOQA: BLE001, RUF100
+            __log__.error(
+                "Error parsing YAML for file '%s",
                 self._source_path,
-                type(e).__name__,
-                e,
+                exc_info=True,
             )
+            return {}
+
+        if not isinstance(metadata, dict):
+            __log__.error(
+                "YAML header didn't parse as a dict for file '%s'",
+                self._source_path,
+            )
+            __log__.debug("YAML data: %r", metadata)
             return {}
 
         return self._parse_yaml_metadata(metadata)
@@ -143,11 +146,15 @@ class YAMLMetadataReader(MarkdownReader):
                 name = "authors"
             elif is_list and name in DUPES_NOT_ALLOWED:
                 if len(value) > 1:
-                    logger.warning(
-                        "Duplicate definition of `%s` for %s (%s). Using first one.",
+                    __log__.warning(
+                        (
+                            "Duplicate definition of '%s' for '%s' ('%r') - "
+                            "using the first one ('%s')"
+                        ),
                         name,
                         self._source_path,
                         value,
+                        value[0],
                     )
                 value = value[0]
 
