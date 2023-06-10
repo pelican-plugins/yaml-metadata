@@ -23,7 +23,10 @@ with contextlib.suppress(ImportError):
 __log__ = logging.getLogger(__name__)
 
 HEADER_RE = re.compile(
-    r"^---$" r"(?P<metadata>.+?)" r"^(?:---|\.\.\.)$" r"(?P<content>.*)",
+    r"\s*^---$"  # File starts with a line of "---" (preceeding blank lines accepted)
+    r"(?P<metadata>.+?)"
+    r"^(?:---|\.\.\.)$"  # metadata section ends with a line of "---" or "..."
+    r"(?P<content>.*)",
     re.MULTILINE | re.DOTALL,
 )
 
