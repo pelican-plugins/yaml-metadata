@@ -78,14 +78,14 @@ class YAMLMetadataReader(MarkdownReader):
 
         # Don't use default Markdown metadata extension for parsing. Leave self.settings
         # alone in case we have to fall back to normal Markdown parsing.
-        self._md_settings = copy.deepcopy(self.settings["MARKDOWN"])
+        md_settings = copy.deepcopy(self.settings["MARKDOWN"])
         with contextlib.suppress(KeyError, ValueError):
-            self._md_settings["extensions"].remove("markdown.extensions.meta")
+            md_settings["extensions"].remove("markdown.extensions.meta")
+        self._md = Markdown(**md_settings)
 
     def read(self, source_path):
         """Parse content and YAML metadata of Markdown files."""
         self._source_path = source_path
-        self._md = Markdown(**self._md_settings)
 
         with pelican_open(source_path) as text:
             m = HEADER_RE.fullmatch(text)
@@ -101,7 +101,7 @@ class YAMLMetadataReader(MarkdownReader):
             return super().read(source_path)
 
         return (
-            self._md.convert(m.group("content")),
+            self._md.reset().convert(m.group("content")),
             self._load_yaml_metadata(m.group("metadata")),
         )
 
@@ -142,8 +142,9 @@ class YAMLMetadataReader(MarkdownReader):
 
             if name in self.settings["FORMATTED_FIELDS"]:
                 # join mutliple formatted fields before parsing them as markdown
-                self._md.reset()
-                value = self._md.convert("\n".join(value) if is_list else str(value))
+                value = self._md.reset().convert(
+                    "\n".join(value) if is_list else str(value)
+                )
             elif is_list and len(value) > 1 and name == "author":
                 # special case: upconvert multiple "author" values to "authors"
                 name = "authors"
