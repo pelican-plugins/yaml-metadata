@@ -85,8 +85,6 @@ class YAMLMetadataReader(MarkdownReader):
 
     def read(self, source_path):
         """Parse content and YAML metadata of Markdown files."""
-        self._source_path = source_path
-
         with pelican_open(source_path) as text:
             m = HEADER_RE.fullmatch(text)
 
@@ -102,10 +100,10 @@ class YAMLMetadataReader(MarkdownReader):
 
         return (
             self._md.reset().convert(m.group("content")),
-            self._load_yaml_metadata(m.group("metadata")),
+            self._load_yaml_metadata(m.group("metadata"), source_path),
         )
 
-    def _load_yaml_metadata(self, text):
+    def _load_yaml_metadata(self, text, source_path):
         """Load Pelican metadata from the specified text.
 
         Returns an empty dict if the data fails to parse properly.
@@ -115,7 +113,7 @@ class YAMLMetadataReader(MarkdownReader):
         except Exception:  # NOQA: BLE001, RUF100
             __log__.error(
                 "Error parsing YAML for file '%s",
-                self._source_path,
+                source_path,
                 exc_info=True,
             )
             return {}
@@ -123,14 +121,14 @@ class YAMLMetadataReader(MarkdownReader):
         if not isinstance(metadata, dict):
             __log__.error(
                 "YAML header didn't parse as a dict for file '%s'",
-                self._source_path,
+                source_path,
             )
             __log__.debug("YAML data: %r", metadata)
             return {}
 
-        return self._parse_yaml_metadata(metadata)
+        return self._parse_yaml_metadata(metadata, source_path)
 
-    def _parse_yaml_metadata(self, meta):
+    def _parse_yaml_metadata(self, meta, source_path):
         """Parse YAML-provided data into Pelican metadata.
 
         Based on MarkdownReader._parse_metadata.
@@ -156,7 +154,7 @@ class YAMLMetadataReader(MarkdownReader):
                             "using the first one ('%s')"
                         ),
                         name,
-                        self._source_path,
+                        source_path,
                         value,
                         value[0],
                     )
