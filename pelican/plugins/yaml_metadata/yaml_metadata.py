@@ -55,7 +55,7 @@ def _strip(obj):
 
 def _to_list(obj):
     """Make object into a list."""
-    return [obj] if not isinstance(obj, list) else obj
+    return [obj] if not isinstance(obj, (tuple, list)) else obj
 
 
 def _parse_date(obj):
