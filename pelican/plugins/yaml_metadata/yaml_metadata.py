@@ -20,10 +20,13 @@ with contextlib.suppress(ImportError):
     ENABLED = True
 
 
-logger = logging.getLogger(__name__)
+__log__ = logging.getLogger(__name__)
 
 HEADER_RE = re.compile(
-    r"^---$" r"(?P<metadata>.+?)" r"^(?:---|\.\.\.)$" r"(?P<content>.*)",
+    r"\s*^---$"  # File starts with a line of "---" (preceeding blank lines accepted)
+    r"(?P<metadata>.+?)"
+    r"^(?:---|\.\.\.)$"  # metadata section ends with a line of "---" or "..."
+    r"(?P<content>.*)",
     re.MULTILINE | re.DOTALL,
 )
 
@@ -52,7 +55,7 @@ def _strip(obj):
 
 def _to_list(obj):
     """Make object into a list."""
-    return [obj] if not isinstance(obj, list) else obj
+    return [obj] if not isinstance(obj, (tuple, list)) else obj
 
 
 def _parse_date(obj):
@@ -75,56 +78,57 @@ class YAMLMetadataReader(MarkdownReader):
 
         # Don't use default Markdown metadata extension for parsing. Leave self.settings
         # alone in case we have to fall back to normal Markdown parsing.
-        self._md_settings = copy.deepcopy(self.settings["MARKDOWN"])
+        md_settings = copy.deepcopy(self.settings["MARKDOWN"])
         with contextlib.suppress(KeyError, ValueError):
-            self._md_settings["extensions"].remove("markdown.extensions.meta")
+            md_settings["extensions"].remove("markdown.extensions.meta")
+        self._md = Markdown(**md_settings)
 
     def read(self, source_path):
         """Parse content and YAML metadata of Markdown files."""
-        self._source_path = source_path
-        self._md = Markdown(**self._md_settings)
-
         with pelican_open(source_path) as text:
             m = HEADER_RE.fullmatch(text)
 
         if not m:
-            logger.info(
+            __log__.info(
                 (
-                    "No YAML metadata header found in '%s' - falling back to Markdown"
-                    " metadata parsing."
+                    "No YAML metadata header found in '%s' - "
+                    "falling back to Markdown metadata parsing."
                 ),
                 source_path,
             )
             return super().read(source_path)
 
         return (
-            self._md.convert(m.group("content")),
-            self._load_yaml_metadata(m.group("metadata")),
+            self._md.reset().convert(m.group("content")),
+            self._load_yaml_metadata(m.group("metadata"), source_path),
         )
 
-    def _load_yaml_metadata(self, text):
-        """Load Pelican metadata from the specified text."""
+    def _load_yaml_metadata(self, text, source_path):
+        """Load Pelican metadata from the specified text.
+
+        Returns an empty dict if the data fails to parse properly.
+        """
         try:
             metadata = yaml.safe_load(text)
-            if not isinstance(metadata, dict):
-                logger.error(
-                    "YAML header didn't parse as a dict for file '%s'",
-                    self._source_path,
-                )
-                logger.debug("YAML data: %r", metadata)
-                return {}
-        except Exception as e:  # NOQA: BLE001, RUF100
-            logger.exception(
-                "Error parsing YAML for file '%s': %s: %s",
-                self._source_path,
-                type(e).__name__,
-                e,
+        except Exception:  # NOQA: BLE001, RUF100
+            __log__.error(
+                "Error parsing YAML for file '%s",
+                source_path,
+                exc_info=True,
             )
             return {}
 
-        return self._parse_yaml_metadata(metadata)
+        if not isinstance(metadata, dict):
+            __log__.error(
+                "YAML header didn't parse as a dict for file '%s'",
+                source_path,
+            )
+            __log__.debug("YAML data: %r", metadata)
+            return {}
 
-    def _parse_yaml_metadata(self, meta):
+        return self._parse_yaml_metadata(metadata, source_path)
+
+    def _parse_yaml_metadata(self, meta, source_path):
         """Parse YAML-provided data into Pelican metadata.
 
         Based on MarkdownReader._parse_metadata.
@@ -136,18 +140,23 @@ class YAMLMetadataReader(MarkdownReader):
 
             if name in self.settings["FORMATTED_FIELDS"]:
                 # join mutliple formatted fields before parsing them as markdown
-                self._md.reset()
-                value = self._md.convert("\n".join(value) if is_list else str(value))
+                value = self._md.reset().convert(
+                    "\n".join(value) if is_list else str(value)
+                )
             elif is_list and len(value) > 1 and name == "author":
                 # special case: upconvert multiple "author" values to "authors"
                 name = "authors"
             elif is_list and name in DUPES_NOT_ALLOWED:
                 if len(value) > 1:
-                    logger.warning(
-                        "Duplicate definition of `%s` for %s (%s). Using first one.",
+                    __log__.warning(
+                        (
+                            "Duplicate definition of '%s' for '%s' ('%r') - "
+                            "using the first one ('%s')"
+                        ),
                         name,
-                        self._source_path,
+                        source_path,
                         value,
+                        value[0],
                     )
                 value = value[0]
 
