@@ -5,8 +5,8 @@ CHANGELOG
 ------------------
 
 - Ignore blank lines before the starting `---` marker
- - Optimize Markdown parsing
- - Small logging improvements
+- Optimize Markdown parsing
+- Small logging improvements
 
 2.1.0 - 2023-06-09
 ------------------
