@@ -50,7 +50,7 @@ YAML_METADATA_PROCESSORS = {
 
 
 def _strip(obj):
-    return str(obj if obj is not None else "").strip()
+    return str(obj).strip()
 
 
 def _to_list(obj):
@@ -135,8 +135,13 @@ class YAMLMetadataReader(MarkdownReader):
         """
         output = {}
         for name, value in meta.items():
+            if value is None:
+                continue
+
             name = name.lower()
             is_list = isinstance(value, list)
+            if is_list:
+                value = [x for x in value if x is not None]
 
             if name in self.settings["FORMATTED_FIELDS"]:
                 # join mutliple formatted fields before parsing them as markdown
@@ -167,6 +172,7 @@ class YAMLMetadataReader(MarkdownReader):
             if value is not _DEL:
                 output[name] = value
 
+        __log__.debug("Parsed YAML data: %r into Pelican data %r", meta, output)
         return output
 
 
