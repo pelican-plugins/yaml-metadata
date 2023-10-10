@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+2.1.2 - 2023-10-10
+------------------
+
+- Strip all null entries from metadata to avoid returning empty tags and authors
+
+Contributed by [Carey Metcalfe](https://github.com/pR0Ps) via [PR #7](https://github.com/pelican-plugins/yaml-metadata/pull/7/)
+
+
 2.1.1 - 2023-06-13
 ------------------
 

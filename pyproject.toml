@@ -1,6 +1,6 @@
 [project]
 name = "pelican-yaml-metadata"
-version = "2.1.1"
+version = "2.1.2"
 description = "Pelican plugin for YAML-formatted Markdown metadata headers"
 authors = [
     {name = "Carey Metcalfe", email = "carey@cmetcalfe.ca"},
