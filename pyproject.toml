@@ -37,12 +37,22 @@ Homepage = "https://github.com/pelican-plugins/yaml-metadata"
 "Funding" = "https://donate.getpelican.com/"
 "Issue Tracker" = "https://github.com/pelican-plugins/yaml-metadata/issues"
 
+[tool.pdm]
+
 [tool.pdm.dev-dependencies]
 lint = [
     "black>=23.12.0",
     "invoke>=2.2.0",
     "ruff>=0.1.8",
 ]
+
+[tool.pdm.build]
+source-includes = [
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+]
+includes = ["pelican/"]
+excludes = ["**/.DS_Store", "tasks.py"]
 
 [tool.autopub]
 project-name = "Pelican YAML Metadata"
