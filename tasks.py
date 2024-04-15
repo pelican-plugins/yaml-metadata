@@ -40,7 +40,7 @@ def ruff(c, fix=False, diff=False):
         fix_flag = "--fix"
     if diff:
         diff_flag = "--diff"
-    c.run(f"{CMD_PREFIX}ruff check {diff_flag} {fix_flag} .")
+    c.run(f"{CMD_PREFIX}ruff check {diff_flag} {fix_flag} .", pty=PTY)
 
 
 @task
@@ -70,8 +70,8 @@ def setup(c):
     """Set up the development environment."""
     if which("pdm") or ACTIVE_VENV:
         tools(c)
-        c.run(f"{CMD_PREFIX}python -m pip install --upgrade pip")
-        c.run(f"{PDM} install")
+        c.run(f"{CMD_PREFIX}python -m pip install --upgrade pip", pty=PTY)
+        c.run(f"{PDM} update --dev", pty=PTY)
         precommit(c)
         logger.info("\nDevelopment environment should now be set up and ready!\n")
     else:
