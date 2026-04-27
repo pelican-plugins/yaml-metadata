@@ -98,9 +98,23 @@ class YAMLMetadataReader(MarkdownReader):
             )
             return super().read(source_path)
 
+        metadata = self._load_yaml_metadata(m.group("metadata"), source_path)
+
+        # Simulate markdown.extensions.meta's behavior
+        # of writing the markdown object's Meta attribiute
+        # Note this is not 1:1 (datetimes are reformatted)
+        self._md.Meta = {
+            k: (
+                [str(i) for i in v]
+                if isinstance(v, list) else
+                [str(v)]
+            )
+            for k, v in metadata.items()
+        }
+
         return (
             self._md.reset().convert(m.group("content")),
-            self._load_yaml_metadata(m.group("metadata"), source_path),
+            metadata,
         )
 
     def _load_yaml_metadata(self, text, source_path):
