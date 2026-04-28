@@ -30,9 +30,10 @@ HEADER_RE = re.compile(
     re.MULTILINE | re.DOTALL,
 )
 
-DUPES_NOT_ALLOWED = set(
-    k for k, v in DUPLICATES_DEFINITIONS_ALLOWED.items() if not v
-) - {"tags", "authors"}
+DUPES_NOT_ALLOWED = {k for k, v in DUPLICATES_DEFINITIONS_ALLOWED.items() if not v} - {
+    "tags",
+    "authors",
+}
 
 _DEL = object()
 

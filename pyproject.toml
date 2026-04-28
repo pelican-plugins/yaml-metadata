@@ -6,8 +6,8 @@ authors = [
     {name = "Carey Metcalfe", email = "carey@cmetcalfe.ca"},
     {name = "Justin Mayer", email = "entroP@gmail.com"}
 ]
-readme = "README.md"
 license = {text = "MIT"}
+readme = "README.md"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
@@ -17,32 +17,33 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-requires-python = ">=3.8.1"
+requires-python = ">=3.11"
 dependencies = [
-    "markdown>=3.3.4",
+    "markdown>=3.4.0",
     "pelican>=4.8.0",
     "pyYAML>=5.4.1",
 ]
 
 [project.urls]
-Homepage = "https://github.com/pelican-plugins/yaml-metadata"
-"Funding" = "https://donate.getpelican.com/"
+"Homepage" = "https://github.com/pelican-plugins/yaml-metadata"
 "Issue Tracker" = "https://github.com/pelican-plugins/yaml-metadata/issues"
+"Changelog" = "https://github.com/pelican-plugins/yaml-metadata/blob/main/CHANGELOG.md"
+"Funding" = "https://donate.getpelican.com/"
 
-[tool.pdm]
+[project.optional-dependencies]
+markdown = ["markdown>=3.4.0"]
 
-[tool.pdm.dev-dependencies]
+[dependency-groups]
 lint = [
-    "invoke>=2.2.0",
-    "ruff>=0.4.1,<0.5.0"
+    "invoke>=2.2",
+    "ruff>=0.15.12,<1.0.0",
 ]
 
 [tool.pdm.build]
@@ -51,10 +52,10 @@ source-includes = [
     "CONTRIBUTING.md",
 ]
 includes = ["pelican/"]
-excludes = ["**/.DS_Store", "tasks.py"]
+excludes = ["**/.DS_Store"]
 
 [tool.autopub]
-project-name = "Pelican YAML Metadata"
+project-name = "yaml-metadata"
 git-username = "botpub"
 git-email = "52496925+botpub@users.noreply.github.com"
 append-github-contributor = true
@@ -63,6 +64,7 @@ append-github-contributor = true
 select = [
   "B",   # flake8-bugbear
   "BLE", # flake8-blind-except
+  "C4",  # flake8-comprehensions
   "D",   # pydocstyle
   "E",   # pycodestyle
   "F",   # pyflakes
@@ -90,7 +92,7 @@ ignore = [
   "D107",    # missing docstring in __init__
   "D203",    # blank line before class docstring
   "D213",    # multi-line docstring summary should start at the second line
-  "ISC001",
+  "ISC001",  # disabled so `ruff format` works without warning
   "PLW2901",
   "TRY401",
 ]

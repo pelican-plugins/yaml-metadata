@@ -1,0 +1,28 @@
+{
+  "template": "https://github.com/getpelican/cookiecutter-pelican-plugin",
+  "commit": "c961d0e4dbb0758b15f7102c6f5585660dd0551a",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "plugin_name": "yaml-metadata",
+      "repo_name": "yaml-metadata",
+      "package_name": "yaml_metadata",
+      "distribution_name": "pelican-yaml-metadata",
+      "version": "2.1.0",
+      "description": "Pelican plugin for YAML-formatted Markdown metadata headers",
+      "authors": "{name = \"Carey Metcalfe\", email = \"carey@cmetcalfe.ca\"}, {name = \"Justin Mayer\", email = \"entroP@gmail.com\"}",
+      "keywords": "\"pelican\", \"plugin\"",
+      "readme": "README.md",
+      "contributing": "CONTRIBUTING.md",
+      "license": "MIT License|MIT",
+      "repo_url": "https://github.com/pelican-plugins/yaml-metadata",
+      "dev_status": "5 - Production/Stable",
+      "tests_exist": false,
+      "python_version": ">=3.11",
+      "pelican_version": ">=4.5",
+      "_template": "https://github.com/getpelican/cookiecutter-pelican-plugin",
+      "_commit": "9fff5f77d0678218def8c081481d3ad3d66cd3c7"
+    }
+  },
+  "directory": null
+}
