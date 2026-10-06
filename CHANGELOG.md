@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+2.2.0 - 2026-10-06
+------------------
+
+Simulate Markdown `Meta` attribute population
+
+Contributed by [Gio](https://github.com/GiovanH) via [PR #14](https://github.com/pelican-plugins/yaml-metadata/pull/14/)
+
+
 2.1.2 - 2023-10-10
 ------------------
 
