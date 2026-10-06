@@ -69,6 +69,13 @@ def _parse_date(obj):
     return get_date(str(obj).strip().replace("_", " "))
 
 
+def _convert_py_to_meta(obj) -> list[str]:
+    # Convert a YAML-parsed Python object to Meta's list of strings
+    if isinstance(obj, list):
+        return [str(i) for i in obj]
+    return [str(obj)]
+
+
 class YAMLMetadataReader(MarkdownReader):
     """Reader for Markdown files with YAML metadata."""
 
@@ -99,9 +106,18 @@ class YAMLMetadataReader(MarkdownReader):
             )
             return super().read(source_path)
 
+        metadata = self._load_yaml_metadata(m.group("metadata"), source_path)
+
+        # Simulate markdown.extensions.meta's behavior
+        # of writing the Markdown object's Meta attribute.
+        # Note this is not 1:1 (datetimes are reformatted)
+        self._md.Meta = {  # type: ignore[attr-defined]
+            k: _convert_py_to_meta(v) for k, v in metadata.items()
+        }
+
         return (
             self._md.reset().convert(m.group("content")),
-            self._load_yaml_metadata(m.group("metadata"), source_path),
+            metadata,
         )
 
     def _load_yaml_metadata(self, text, source_path):
